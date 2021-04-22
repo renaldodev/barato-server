@@ -69,7 +69,10 @@ var UserController = /** @class */ (function () {
             var user;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, userModel_1.default.findOne({ email: email.toLowerCase() })];
+                    case 0: return [4 /*yield*/, userModel_1.default.findOne({ email: email.toLowerCase() }).populate([
+                            "address",
+                            "favorities",
+                        ])];
                     case 1:
                         user = _a.sent();
                         if (!user)
@@ -84,7 +87,10 @@ var UserController = /** @class */ (function () {
             var user;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, userModel_1.default.findOne({ _id: id })];
+                    case 0: return [4 /*yield*/, userModel_1.default.findOne({ _id: id }).populate([
+                            "address",
+                            "favorities",
+                        ])];
                     case 1:
                         user = _a.sent();
                         if (!user)

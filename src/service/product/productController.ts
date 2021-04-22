@@ -3,6 +3,14 @@ import { ProductDocument } from "./productModel";
 import Product from "./productModel";
 
 export default class ProductController implements IProductFactore {
+  async setAvable(id: string): Promise<string> {
+    await Product.updateOne({_id:id},{isAvable:true});
+      return Promise.resolve("Product updated");
+  }
+ async setEnable(id: string): Promise<string> {
+    await Product.updateOne({_id:id},{isAvable:false});
+      return Promise.resolve("Product updated");
+  }
   async index(
     options: PaginationOptionsType
   ): Promise<ProductDocument[] | any> {
@@ -11,7 +19,7 @@ export default class ProductController implements IProductFactore {
   }
 
   async getProductByID(id: string): Promise<ProductDocument | string | null> {
-    const product = await Product.findOne({ _id: id });
+    const product = await Product.findOne({ _id: id }).populate(['categorie']);
     return product;
   }
 
@@ -25,7 +33,7 @@ export default class ProductController implements IProductFactore {
     if (!product) {
       return Promise.reject("Product not found");
     }
-    await Product.remove({ _id: id });
+    await Product.deleteOne({ _id: id });
     return Promise.resolve("Product removed succefull");
   }
 }

@@ -23,69 +23,69 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express = __importStar(require("express"));
-var productController_1 = __importDefault(require("./productController"));
 var validate_1 = require("./validate");
+var categoriesController_1 = __importDefault(require("./categoriesController"));
+var service = new categoriesController_1.default();
 var router = express.Router();
-var service = new productController_1.default();
 router.get("/", function (req, res) {
-    service.index({ limit: 20, page: 1 }).then(function (response) {
-        res.status(200);
-        res.set({ "Content-Type": "application/json" });
+    service.index().then(function (response) {
         return res.json(response);
     });
 });
-router.get("/:id", function (req, res) {
-    res.status(400);
-    res.set({ "Content-Type": "application/json" });
+router.post("/add", validate_1.addAndUpdateCategoriesValidationRules(), validate_1.validate, function (req, res) {
+    var categorie = {
+        categorieName: req.body.name,
+        categorieDescription: req.body.description,
+    };
     service
-        .getProductByID(req.params.id)
-        .then(function (response) {
-        res.status(200);
-        res.set({ "Content-Type": "application/json" });
-        return res.json(response);
-    })
-        .catch(function (_) {
-        res.status(406);
-        res.json({ error: "Product not founded" });
-    });
-});
-router.post("/add", validate_1.addAndUpdateProductValidationRules(), validate_1.validate, function (req, res) {
-    var product = req.body;
-    service
-        .add(product)
+        .add(categorie.categorieName, categorie.categorieDescription)
         .then(function (response) {
         res.status(201);
         return res.json(response);
     })
         .catch(function (_) {
         res.status(500);
-        res.json({ error: "Something went wrong on create product" });
+        return res.json({ error: "error on create user" });
     });
 });
+router.put("/update/:id", validate_1.addAndUpdateCategoriesValidationRules(), validate_1.validate, function (req, res) {
+    var categorie = {
+        categorieName: req.body.name,
+        categorieDescription: req.body.description,
+    };
+    var id = req.params.id;
+    service
+        .update(categorie.categorieName, id, categorie.categorieDescription)
+        .then(function (response) {
+        res.status(200);
+        return res.json(response);
+    })
+        .catch(function (_) {
+        res.status(500);
+        return res.json({ error: "error on update user" });
+    });
+});
+router.get("/search/:name", function (req, res) {
+    var searchString = req.params.name;
+    var categories = service.search(searchString);
+    console.log(categories);
+    if (!categories) {
+        return res.json({ error: searchString + " not founded" });
+    }
+    return res.json(categories);
+});
 router.delete("/delete/:id", function (req, res) {
-    var productId = req.params.id;
+    var categorieId = req.params.id;
     res.set({ "Content-Type": "application/json" });
     service
-        .remove(productId)
+        .remove(categorieId)
         .then(function (response) {
         res.status(204);
         return res.json(response);
     })
         .catch(function (error) {
         res.status(500);
-        return res.json({ error: "something went wrong on delete product" });
-    });
-});
-router.put("/enable/:id", function (req, res) {
-    service.setEnable(req.params.id).then(function (response) {
-        res.status(204);
-        return res.json(response);
-    });
-});
-router.put("/avable/:id", function (req, res) {
-    service.setAvable(req.params.id).then(function (response) {
-        res.status(204);
-        return res.json(response);
+        return res.json({ error: "something went wrong on delete categorie" });
     });
 });
 exports.default = router;

@@ -21,14 +21,20 @@ export default class UserController implements IUserFactore {
     return savedUser.id;
   }
   async findUserByEmail(email: string): Promise<string | UserDocument | null> {
-    const user = await User.findOne({ email: email.toLowerCase() });
+    const user = await User.findOne({ email: email.toLowerCase() }).populate([
+      "address",
+      "favorities",
+    ]);
     if (!user) return Promise.reject("User not found");
 
     return Promise.resolve(new User(user));
   }
 
   async findUserByID(id: string): Promise<UserDocument> {
-    const user = await User.findOne({ _id: id });
+    const user = await User.findOne({ _id: id }).populate([
+      "address",
+      "favorities",
+    ]);
     if (!user) return Promise.reject("User not found");
 
     return Promise.resolve(new User(user));
@@ -50,7 +56,7 @@ export default class UserController implements IUserFactore {
 
   async addFavorities(productId: string, userId: string): Promise<string> {
     try {
-            // await User.updateOne(
+      // await User.updateOne(
       //   { _id: userId },
       //   { $push: { favorities: productId } }
       // );

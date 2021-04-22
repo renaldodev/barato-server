@@ -39,94 +39,91 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var productModel_1 = __importDefault(require("./productModel"));
-var ProductController = /** @class */ (function () {
-    function ProductController() {
+var categoriesModel_1 = __importDefault(require("./categoriesModel"));
+var CategoriesController = /** @class */ (function () {
+    function CategoriesController() {
     }
-    ProductController.prototype.setAvable = function (id) {
+    CategoriesController.prototype.index = function () {
         return __awaiter(this, void 0, void 0, function () {
+            var categories;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, productModel_1.default.updateOne({ _id: id }, { isAvable: true })];
+                    case 0: return [4 /*yield*/, categoriesModel_1.default.find()];
                     case 1:
-                        _a.sent();
-                        return [2 /*return*/, Promise.resolve("Product updated")];
+                        categories = _a.sent();
+                        return [2 /*return*/, Promise.resolve(categories)];
                 }
             });
         });
     };
-    ProductController.prototype.setEnable = function (id) {
+    CategoriesController.prototype.add = function (name, description) {
         return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, productModel_1.default.updateOne({ _id: id }, { isAvable: false })];
-                    case 1:
-                        _a.sent();
-                        return [2 /*return*/, Promise.resolve("Product updated")];
-                }
-            });
-        });
-    };
-    ProductController.prototype.index = function (options) {
-        return __awaiter(this, void 0, void 0, function () {
-            var products;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, productModel_1.default.paginate({}, options)];
-                    case 1:
-                        products = _a.sent();
-                        return [2 /*return*/, Promise.resolve(products)];
-                }
-            });
-        });
-    };
-    ProductController.prototype.getProductByID = function (id) {
-        return __awaiter(this, void 0, void 0, function () {
-            var product;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, productModel_1.default.findOne({ _id: id }).populate(['categorie'])];
-                    case 1:
-                        product = _a.sent();
-                        return [2 /*return*/, product];
-                }
-            });
-        });
-    };
-    ProductController.prototype.add = function (product) {
-        return __awaiter(this, void 0, void 0, function () {
-            var newproduct;
+            var categories, newCategorie;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        newproduct = new productModel_1.default(product);
-                        return [4 /*yield*/, newproduct.save()];
+                        categories = {
+                            categorieName: name,
+                            categorieDescription: description,
+                        };
+                        newCategorie = new categoriesModel_1.default(categories);
+                        return [4 /*yield*/, newCategorie.save()];
                     case 1:
                         _a.sent();
-                        return [2 /*return*/, Promise.resolve("Product add")];
+                        return [2 /*return*/, Promise.resolve("Categorie add")];
                 }
             });
         });
     };
-    ProductController.prototype.remove = function (id) {
+    CategoriesController.prototype.update = function (name, categorieId, description) {
         return __awaiter(this, void 0, void 0, function () {
-            var product;
+            var categories;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, productModel_1.default.findOne({ _id: id })];
+                    case 0:
+                        categories = {
+                            categorieName: name,
+                            categorieDescription: description,
+                        };
+                        return [4 /*yield*/, categoriesModel_1.default.updateOne({ _id: categorieId }, categories)];
                     case 1:
-                        product = _a.sent();
-                        if (!product) {
-                            return [2 /*return*/, Promise.reject("Product not found")];
-                        }
-                        return [4 /*yield*/, productModel_1.default.deleteOne({ _id: id })];
-                    case 2:
                         _a.sent();
-                        return [2 /*return*/, Promise.resolve("Product removed succefull")];
+                        return [2 /*return*/, Promise.resolve("Categorie updated")];
                 }
             });
         });
     };
-    return ProductController;
+    CategoriesController.prototype.remove = function (id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var categorie;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, categoriesModel_1.default.findOne({ _id: id })];
+                    case 1:
+                        categorie = _a.sent();
+                        if (!categorie) {
+                            return [2 /*return*/, Promise.reject("categorie not found")];
+                        }
+                        return [4 /*yield*/, categoriesModel_1.default.remove({ _id: id })];
+                    case 2:
+                        _a.sent();
+                        return [2 /*return*/, Promise.resolve("Categorie removed succefull")];
+                }
+            });
+        });
+    };
+    CategoriesController.prototype.escapeRegex = function (text) {
+        return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+    };
+    CategoriesController.prototype.search = function (name) {
+        var regex = new RegExp(this.escapeRegex(name), "gi");
+        categoriesModel_1.default.find({ $text: { $search: name } }, function (err, docs) {
+            if (err) {
+                return Promise.reject(err);
+            }
+            return Promise.resolve(docs);
+        });
+    };
+    return CategoriesController;
 }());
-exports.default = ProductController;
+exports.default = CategoriesController;

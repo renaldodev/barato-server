@@ -64,4 +64,17 @@ router.delete("/delete/:id", (req: express.Request, res: express.Response) => {
     });
 });
 
+router.put("/enable/:id", (req, res) => {
+  service.setEnable(req.params.id).then((response) => {
+    res.status(204);
+    return res.json(response);
+  });
+});
+
+router.put("/avable/:id", (req, res) => {
+  service.setAvable(req.params.id).then((response) => {
+    res.status(204);
+    return res.json(response);
+  });
+});
 export default router;

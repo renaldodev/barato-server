@@ -5,6 +5,8 @@ export interface IProductFactore {
   getProductByID(id: string): Promise<ProductDocument | string | null>;
   add(product: ProductDocument): Promise<string>;
   remove(id: string): Promise<string>;
+  setAvable(id:string): Promise<string>;
+  setEnable(id:string): Promise<string>;
 }
 
 export type PaginationOptionsType = {
