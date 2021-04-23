@@ -92,10 +92,13 @@ router.delete("/delete/:id", function (req, res) {
 router.put("/addfavorite/:userId/:productId", function (req, res) {
     var userId = req.params.userId;
     var productId = req.params.productId;
-    service.addFavorities(productId, userId).then(function (response) {
+    service
+        .addFavorities(productId, userId)
+        .then(function (response) {
         res.status(200);
         return res.json(response);
-    }).catch(function (_) {
+    })
+        .catch(function (_) {
         res.status(500);
         return res.json({ error: "Something went wrong on add favorities" });
     });
@@ -103,12 +106,42 @@ router.put("/addfavorite/:userId/:productId", function (req, res) {
 router.put("/removefavorite/:userId/:productId", function (req, res) {
     var userId = req.params.userId;
     var productId = req.params.productId;
-    service.removeFavorities(productId, userId).then(function (response) {
+    service
+        .removeFavorities(productId, userId)
+        .then(function (response) {
         res.status(200);
         return res.json(response);
-    }).catch(function (_) {
+    })
+        .catch(function (_) {
         res.status(500);
         return res.json({ error: "Something went wrong on remove favorities" });
+    });
+});
+router.put("/address/:userId", function (req, res) {
+    var userId = req.params.userId;
+    service
+        .addAddress(req.body.street, req.body.adictional, userId)
+        .then(function (response) {
+        res.status(200);
+        return res.json(response);
+    })
+        .catch(function (_) {
+        res.status(500);
+        return res.json({ error: "Something went wrong on add address" });
+    });
+});
+router.put("/removeaddress/:userId/:addressId", function (req, res) {
+    var userId = req.params.userId;
+    var addressId = req.params.addressId;
+    service
+        .removeAddress(addressId, userId)
+        .then(function (response) {
+        res.status(200);
+        return res.json(response);
+    })
+        .catch(function (_) {
+        res.status(500);
+        return res.json({ error: "Something went wrong on remove address" });
     });
 });
 exports.default = router;

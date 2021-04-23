@@ -31,7 +31,12 @@ var userSchemma = new mongoose.Schema({
     typeAuth: { type: String, require: true },
     password: String,
     favorities: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
-    address: [{ rua: { type: String }, add: { type: String } }],
+    address: [
+        {
+            street: { type: String },
+            adictional: { type: String },
+        },
+    ],
 });
 userSchemma.plugin(mongoose_paginate_v2_1.default);
 var User = mongoose.model("User", userSchemma);

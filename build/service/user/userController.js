@@ -70,7 +70,6 @@ var UserController = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, userModel_1.default.findOne({ email: email.toLowerCase() }).populate([
-                            "address",
                             "favorities",
                         ])];
                     case 1:
@@ -88,7 +87,6 @@ var UserController = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, userModel_1.default.findOne({ _id: id }).populate([
-                            "address",
                             "favorities",
                         ])];
                     case 1:
@@ -169,6 +167,49 @@ var UserController = /** @class */ (function () {
                         return [3 /*break*/, 3];
                     case 2:
                         _2 = _a.sent();
+                        return [2 /*return*/, Promise.reject("Something went wrong on remove favorities")];
+                    case 3: return [2 /*return*/, Promise.resolve("Favorite remove")];
+                }
+            });
+        });
+    };
+    UserController.prototype.addAddress = function (street, adictional, userId) {
+        return __awaiter(this, void 0, void 0, function () {
+            var user, _3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 3, , 4]);
+                        return [4 /*yield*/, userModel_1.default.findOne({ _id: userId })];
+                    case 1:
+                        user = _a.sent();
+                        user === null || user === void 0 ? void 0 : user.address.push({ street: street, adictional: adictional });
+                        return [4 /*yield*/, (user === null || user === void 0 ? void 0 : user.save())];
+                    case 2:
+                        _a.sent();
+                        return [3 /*break*/, 4];
+                    case 3:
+                        _3 = _a.sent();
+                        Promise.reject("Something went wrong to add address");
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/, Promise.resolve("Address add ")];
+                }
+            });
+        });
+    };
+    UserController.prototype.removeAddress = function (addressId, userId) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _4;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, userModel_1.default.updateOne({ _id: userId }, { $pull: { address: { _id: addressId } } })];
+                    case 1:
+                        _a.sent();
+                        return [3 /*break*/, 3];
+                    case 2:
+                        _4 = _a.sent();
                         return [2 /*return*/, Promise.reject("Something went wrong on remove favorities")];
                     case 3: return [2 /*return*/, Promise.resolve("Favorite remove")];
                 }
