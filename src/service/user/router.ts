@@ -57,7 +57,6 @@ router.get("/email/:email", (req: express.Request, res: express.Response) => {
     });
 });
 
-
 router.delete("/delete/:id", (req: express.Request, res: express.Response) => {
   const productId = req.params.id;
   res.set({ "Content-Type": "application/json" });
@@ -73,27 +72,73 @@ router.delete("/delete/:id", (req: express.Request, res: express.Response) => {
     });
 });
 
-router.put("/addfavorite/:userId/:productId",(req:express.Request,res:express.Response)=>{
-  const userId=req.params.userId;
-  const productId=req.params.productId;
-  service.addFavorities(productId,userId).then((response)=>{
-    res.status(200)
-    return res.json(response)
-  }).catch(_=>{
-    res.status(500)
-    return res.json({error:"Something went wrong on add favorities"})
-  })
-})
-router.put("/removefavorite/:userId/:productId",(req:express.Request,res:express.Response)=>{
-  const userId=req.params.userId;
-  const productId=req.params.productId;
-  service.removeFavorities(productId,userId).then((response)=>{
-    res.status(200)
-    return res.json(response)
-  }).catch(_=>{
-    res.status(500)
-    return res.json({error:"Something went wrong on remove favorities"})
-  })
-})
+router.put(
+  "/addfavorite/:userId/:productId",
+  (req: express.Request, res: express.Response) => {
+    const userId = req.params.userId;
+    const productId = req.params.productId;
+    service
+      .addFavorities(productId, userId)
+      .then((response) => {
+        res.status(200);
+        return res.json(response);
+      })
+      .catch((_) => {
+        res.status(500);
+        return res.json({ error: "Something went wrong on add favorities" });
+      });
+  }
+);
+router.put(
+  "/removefavorite/:userId/:productId",
+  (req: express.Request, res: express.Response) => {
+    const userId = req.params.userId;
+    const productId = req.params.productId;
+    service
+      .removeFavorities(productId, userId)
+      .then((response) => {
+        res.status(200);
+        return res.json(response);
+      })
+      .catch((_) => {
+        res.status(500);
+        return res.json({ error: "Something went wrong on remove favorities" });
+      });
+  }
+);
 
+router.put(
+  "/address/:userId",
+  (req: express.Request, res: express.Response) => {
+    const userId = req.params.userId;
+    service
+      .addAddress(req.body.street, req.body.adictional, userId)
+      .then((response) => {
+        res.status(200);
+        return res.json(response);
+      })
+      .catch((_) => {
+        res.status(500);
+        return res.json({ error: "Something went wrong on add address" });
+      });
+  }
+);
+
+router.put(
+  "/removeaddress/:userId/:addressId",
+  (req: express.Request, res: express.Response) => {
+    const userId = req.params.userId;
+    const addressId = req.params.addressId;
+    service
+      .removeAddress(addressId, userId)
+      .then((response) => {
+        res.status(200);
+        return res.json(response);
+      })
+      .catch((_) => {
+        res.status(500);
+        return res.json({ error: "Something went wrong on remove address" });
+      });
+  }
+);
 export default router;

@@ -6,7 +6,7 @@ export interface UserDocument extends mongoose.Document {
   phone: string;
   typeAuth: string;
   password?: string;
-  address: [{ rua: string; add: string }];
+  address: [{street: string; adictional: string }];
   favorities: Array<string>;
 }
 
@@ -19,7 +19,12 @@ const userSchemma = new mongoose.Schema({
   typeAuth: { type: String, require: true },
   password: String,
   favorities: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
-  address: [{ rua: { type: String }, add: { type: String } }],
+  address: [
+    {
+      street: { type: String },
+      adictional: { type: String },
+    },
+  ],
 });
 
 userSchemma.plugin(mongoosePagination);

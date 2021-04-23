@@ -2,7 +2,7 @@ import { PaginationOptionsType } from "../product/productFactore";
 import { IUserFactore } from "./userFactore";
 import { UserDocument } from "./userModel";
 import User from "./userModel";
-
+import * as mongoose from "mongoose";
 export default class UserController implements IUserFactore {
   async add(
     name: string,
@@ -22,7 +22,6 @@ export default class UserController implements IUserFactore {
   }
   async findUserByEmail(email: string): Promise<string | UserDocument | null> {
     const user = await User.findOne({ email: email.toLowerCase() }).populate([
-      "address",
       "favorities",
     ]);
     if (!user) return Promise.reject("User not found");
@@ -32,7 +31,6 @@ export default class UserController implements IUserFactore {
 
   async findUserByID(id: string): Promise<UserDocument> {
     const user = await User.findOne({ _id: id }).populate([
-      "address",
       "favorities",
     ]);
     if (!user) return Promise.reject("User not found");
@@ -74,6 +72,37 @@ export default class UserController implements IUserFactore {
       await User.updateOne(
         { _id: userId },
         { $pull: { favorities: productId } }
+      );
+    } catch (_) {
+      return Promise.reject("Something went wrong on remove favorities");
+    }
+
+    return Promise.resolve("Favorite remove");
+  }
+
+  async addAddress(
+    street: string,
+    adictional: string,
+    userId: string
+  ): Promise<string> {
+    try {
+      // await User.updateOne(
+      //   { _id: userId },
+      //   { $push: { favorities: productId } }
+      // );
+      const user = await User.findOne({ _id: userId });
+      user?.address.push({street, adictional });
+      await user?.save();
+    } catch (_) {
+      Promise.reject("Something went wrong to add address");
+    }
+    return Promise.resolve("Address add ");
+  }
+  async removeAddress(addressId: string, userId: string): Promise<string> {
+    try {
+      await User.updateOne(
+        { _id: userId },
+        { $pull: { address: { _id: addressId } } }
       );
     } catch (_) {
       return Promise.reject("Something went wrong on remove favorities");
